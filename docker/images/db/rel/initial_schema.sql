@@ -2,40 +2,83 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS POSTGIS;
 CREATE EXTENSION IF NOT EXISTS POSTGIS_TOPOLOGY;
 
-CREATE TABLE public.teams (
-	id              uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-	name            VARCHAR(250) NOT NULL,
-	created_on      TIMESTAMP NOT NULL DEFAULT NOW(),
-	updated_on      TIMESTAMP NOT NULL DEFAULT NOW()
+-- Tabela Country
+CREATE TABLE public.country (
+    country_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    country_name VARCHAR(50)
 );
 
-CREATE TABLE public.countries (
-	id              uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-	name            VARCHAR(250) UNIQUE NOT NULL,
-	geom            GEOMETRY,
-	created_on      TIMESTAMP NOT NULL DEFAULT NOW(),
-	updated_on      TIMESTAMP NOT NULL DEFAULT NOW()
+-- Tabela Strong_Foot
+CREATE TABLE public.strong_foot (
+    foot_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    foot_name VARCHAR(50)
 );
 
-CREATE TABLE public.players (
-	id              uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-	name            VARCHAR(250) NOT NULL,
-	age             INT NOT NULL,
-	team_id         uuid,
-	country_id      uuid NOT NULL,
-	created_on      TIMESTAMP NOT NULL DEFAULT NOW(),
-	updated_on      TIMESTAMP NOT NULL DEFAULT NOW()
+-- Tabela Club
+CREATE TABLE public.club (
+    club_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    club_name VARCHAR(100)
 );
 
-ALTER TABLE players
-    ADD CONSTRAINT players_countries_id_fk
-        FOREIGN KEY (country_id) REFERENCES countries
-            ON DELETE CASCADE;
+-- Tabela Player
+CREATE TABLE public.player (
+    player_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    club_id INT,
+    country_id INT,
+    name VARCHAR(100),
+    height INT,
+    price VARCHAR(20),
+    salary VARCHAR(20),
+    foot_id INT,
+    FOREIGN KEY (club_id) REFERENCES Club(club_id),
+    FOREIGN KEY (country_id) REFERENCES Country(country_id),
+    FOREIGN KEY (foot_id) REFERENCES Strong_Foot(foot_id)
+);
 
-ALTER TABLE players
-    ADD CONSTRAINT players_teams_id_fk
-        FOREIGN KEY (team_id) REFERENCES teams
-            ON DELETE SET NULL;
+-- Tabela Player_Stats
+CREATE TABLE public.player_stats (
+    player_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    overall INT,
+    potential INT,
+    offense VARCHAR(10),
+    defense VARCHAR(10),
+    crossing INT,
+    finishing INT,
+    heading INT,
+    short_pass INT,
+    volleys INT,
+    dribble INT,
+    curve INT,
+    free_kick INT,
+    long_pass INT,
+    ball_control INT,
+    acceleration INT,
+    sprint INT,
+    agility INT,
+    reactions INT,
+    balance INT,
+    shot_power INT,
+    jump INT,
+    stamina INT,
+    strength INT,
+    long_shot INT,
+    aggression INT,
+    positioning INT,
+    vision INT,
+    penalty INT,
+    composure INT,
+    interception INT,
+    defensive_awareness INT,
+    stand_tackle INT,
+    slide_tackle INT,
+    diving INT,
+    handling INT,
+    gk_kick INT,
+    gk_positioning INT,
+    reflexes INT,
+    FOREIGN KEY (player_id) REFERENCES Player(player_id)
+);
+
 
 /* Sample table and data that we can insert once the database is created for the first time */
 CREATE TABLE public.teachers (
